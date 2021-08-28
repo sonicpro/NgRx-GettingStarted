@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import * as fromProductList from '../../state/product-list.reducer';
-// import { selectShowProductCode } from '../../state/selectors';
 import { hideProductCode, showProductCode } from '../../state/actions';
 
 import { Subscription } from 'rxjs';
@@ -30,7 +28,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private displayCodeCurrentValue: boolean;
   private sub2: Subscription;
 
-  constructor(private productService: ProductService, private store: Store<fromProductList.AppState>) {
+  constructor(private productService: ProductService, private store: Store<{ showProductCode: boolean }>) {
     this.displayCode$ = this.store.select('showProductCode');
   }
 
@@ -44,7 +42,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       error: err => this.errorMessage = err
     });
 
-    this.displayCode$.subscribe({
+    this.sub2 = this.displayCode$.subscribe({
       next: (displayCode: boolean) => this.displayCodeCurrentValue = displayCode
     })
   }
