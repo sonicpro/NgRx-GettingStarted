@@ -1,4 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Store, Action } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import * as fromProductList from '../../state/product-list.reducer';
+// import { selectShowProductCode } from '../../state/selectors';
+import { hideProductCode, showProductCode } from '../../state/actions';
 
 import { Subscription } from 'rxjs';
 
@@ -14,7 +19,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   pageTitle = 'Products';
   errorMessage: string;
 
-  displayCode: boolean;
+  displayCode$: Observable<boolean>;
 
   products: Product[];
 
@@ -22,7 +27,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedProduct: Product | null;
   sub: Subscription;
 
-  constructor(private productService: ProductService) { }
+  private displayCodeCurrentValue: boolean;
+  private sub2: Subscription;
+
+  constructor(private productService: ProductService, private store: Store<fromProductList.AppState>) {
+    this.displayCode$ = this.store.select('showProductCode');
+  }
 
   ngOnInit(): void {
     this.sub = this.productService.selectedProductChanges$.subscribe(
@@ -33,14 +43,23 @@ export class ProductListComponent implements OnInit, OnDestroy {
       next: (products: Product[]) => this.products = products,
       error: err => this.errorMessage = err
     });
+
+    this.displayCode$.subscribe({
+      next: (displayCode: boolean) => this.displayCodeCurrentValue = displayCode
+    })
   }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+    this.sub2.unsubscribe();
   }
 
   checkChanged(): void {
-    this.displayCode = !this.displayCode;
+    if (this.displayCodeCurrentValue) {
+      this.store.dispatch(hideProductCode());
+    } else {
+      this.store.dispatch(showProductCode());
+    }
   }
 
   newProduct(): void {
