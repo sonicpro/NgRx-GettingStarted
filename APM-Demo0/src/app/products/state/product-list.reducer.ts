@@ -13,14 +13,8 @@ const initialState: ProductListState = {
 
 const productListReducer: ActionReducer<ProductListState, Action> = createReducer(
   initialState,
-  on(showProductCode, (state) => {
-    console.log('previous state: ' + JSON.stringify(state));
-    return { ...state, showProductCode: true }
-  }),
-  on(hideProductCode, (state) => {
-    console.log('previous state: ' + JSON.stringify(state));
-    return { ...state, showProductCode: false }
-  }),
+  on(showProductCode, (state) => ({ ...state, showProductCode: true })),
+  on(hideProductCode, (state) => ({ ...state, showProductCode: false })),
 )
 
 export function reducer(state: ProductListState | undefined, action: Action) {
