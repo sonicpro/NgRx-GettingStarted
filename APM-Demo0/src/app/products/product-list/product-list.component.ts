@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, Action } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { hideProductCode, showProductCode } from '../../state/actions';
+import * as fromProductList from '../state/product-list.reducer';
+import { hideProductCode, showProductCode } from '../state/actions';
 
 import { Subscription } from 'rxjs';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
+import { ProductListState } from '../state/product-list.reducer';
 
 @Component({
   selector: 'pm-product-list',
@@ -17,7 +18,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   pageTitle = 'Products';
   errorMessage: string;
 
-  displayCode$: Observable<boolean>;
+  displayCode: boolean;
 
   products: Product[];
 
@@ -25,11 +26,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedProduct: Product | null;
   sub: Subscription;
 
-  private displayCodeCurrentValue: boolean;
   private sub2: Subscription;
 
-  constructor(private productService: ProductService, private store: Store<{ showProductCode: boolean }>) {
-    this.displayCode$ = this.store.select('showProductCode');
+  // Here we inject global store, that is why is is typed as "any" rather than "fromProductList.ProductListState".
+  constructor(private productService: ProductService, private store: Store<any>) {
   }
 
   ngOnInit(): void {
@@ -42,8 +42,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
       error: err => this.errorMessage = err
     });
 
-    this.sub2 = this.displayCode$.subscribe({
-      next: (displayCode: boolean) => this.displayCodeCurrentValue = displayCode
+    this.sub2 = this.store.select(fromProductList.PRODUCTS_FEATURE_KEY).subscribe({
+      next: (productListState: ProductListState) => this.displayCode = productListState.showProductCode
     })
   }
 
@@ -53,7 +53,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   checkChanged(): void {
-    if (this.displayCodeCurrentValue) {
+    if (this.displayCode) {
       this.store.dispatch(hideProductCode());
     } else {
       this.store.dispatch(showProductCode());

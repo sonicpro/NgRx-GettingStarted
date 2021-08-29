@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { StoreModule } from '@ngrx/store';
+import * as fromProductList from './state/product-list.reducer';
 
 import { SharedModule } from '../shared/shared.module';
 
@@ -14,7 +16,8 @@ const productRoutes: Routes = [
 @NgModule({
   imports: [
     SharedModule,
-    RouterModule.forChild(productRoutes)
+    RouterModule.forChild(productRoutes),
+    StoreModule.forFeature(fromProductList.PRODUCTS_FEATURE_KEY, fromProductList.reducer),
   ],
   declarations: [
     ProductShellComponent,
