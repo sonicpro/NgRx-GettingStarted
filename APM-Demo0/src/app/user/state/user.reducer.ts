@@ -13,8 +13,8 @@ const initialState: UserState = {
 
 const userReducer: ActionReducer<UserState, Action> = createReducer(
   initialState,
-  on(maskUserName, (state) => ({ ...state, maskUserName: true })),
-  on(unmaskUserName, (state) => ({ ...state, maskUserName: false })),
+  on(maskUserName, (state: UserState) => ({ ...state, maskUserName: true })),
+  on(unmaskUserName, (state: UserState) => ({ ...state, maskUserName: false })),
 )
 
 export function reducer(state: UserState | undefined, action: Action) {

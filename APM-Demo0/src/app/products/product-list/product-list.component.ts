@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { filter } from 'rxjs/operators';
-import * as fromProductList from '../state/product-list.reducer';
 import { hideProductCode, showProductCode } from '../state/actions';
 
 import { Subscription } from 'rxjs';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
-import { ProductListState } from '../state/product-list.reducer';
+import * as fromProducts from '../state/product-list.reducer';
+import { State } from '../state/product-list.reducer';
 
 @Component({
   selector: 'pm-product-list',
@@ -30,7 +30,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private sub2: Subscription;
 
   // Here we inject global store, that is why is is typed as "any" rather than "fromProductList.ProductListState".
-  constructor(private productService: ProductService, private store: Store<any>) {
+  constructor(private productService: ProductService, private store: Store<State>) {
   }
 
   ngOnInit(): void {
@@ -43,9 +43,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
       error: err => this.errorMessage = err
     });
 
-    this.sub2 = this.store.select(fromProductList.PRODUCTS_FEATURE_KEY).pipe(
+    this.sub2 = this.store.select(fromProducts.PRODUCTS_FEATURE_KEY).pipe(
       filter(products => Boolean(products))).subscribe({
-      next: (productListState: ProductListState) => this.displayCode = productListState.showProductCode
+      next: (productListState) => this.displayCode = productListState.showProductCode
     })
   }
 

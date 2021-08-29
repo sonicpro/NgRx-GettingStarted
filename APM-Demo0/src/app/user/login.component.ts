@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import * as fromUser from './state/user.reducer';
+import * as fromUsers from './state/user.reducer';
+import { State } from '../state/app.state';
 import { unmaskUserName, maskUserName } from './state/actions';
 
 import { filter } from 'rxjs/operators';
@@ -20,17 +21,17 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private sub: Subscription;
 
-  constructor(private authService: AuthService, private router: Router, private store: Store<any>) { }
+  constructor(private authService: AuthService, private router: Router, private store: Store<State>) { }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
 
   ngOnInit(): void {
-    this.sub = this.store.select(fromUser.USER_FEATURE_KEY).pipe(
+    this.sub = this.store.select(fromUsers.USER_FEATURE_KEY).pipe(
       filter(userState => Boolean(userState))
     ).subscribe({
-      next: (userState: fromUser.UserState) => this.maskUserName = userState.maskUserName
+      next: (userState) => this.maskUserName = userState.maskUserName
     });
   }
 
