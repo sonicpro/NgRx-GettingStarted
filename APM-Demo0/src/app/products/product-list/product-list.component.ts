@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store, Action } from '@ngrx/store';
+import { Store } from '@ngrx/store';
+import { filter } from 'rxjs/operators';
 import * as fromProductList from '../state/product-list.reducer';
 import { hideProductCode, showProductCode } from '../state/actions';
 
@@ -42,7 +43,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
       error: err => this.errorMessage = err
     });
 
-    this.sub2 = this.store.select(fromProductList.PRODUCTS_FEATURE_KEY).subscribe({
+    this.sub2 = this.store.select(fromProductList.PRODUCTS_FEATURE_KEY).pipe(
+      filter(products => Boolean(products))).subscribe({
       next: (productListState: ProductListState) => this.displayCode = productListState.showProductCode
     })
   }
