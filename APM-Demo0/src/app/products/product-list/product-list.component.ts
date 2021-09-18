@@ -29,7 +29,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   private sub2: Subscription;
 
-  // Here we inject global store, that is why is is typed as "any" rather than "fromProductList.ProductListState".
+  // "State" here is the global state extended with ProductState. We use global state here because this component is from the lazy-loaded module.
   constructor(private productService: ProductService, private store: Store<State>) {
   }
 
