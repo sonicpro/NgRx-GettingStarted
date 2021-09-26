@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
-import * as fromUser from './state/user.reducer';
+import * as fromUser from './state';
 
 import { SharedModule } from '../shared/shared.module';
 

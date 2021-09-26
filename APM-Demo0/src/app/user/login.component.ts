@@ -1,18 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import * as fromUsers from './state/user.reducer';
+import { Store, select } from '@ngrx/store';
+import * as fromUsers from './state';
 import { State } from '../state/app.state';
-import { unmaskUserName, maskUserName } from './state/actions';
+import { unmaskUserName, maskUserName } from './state/user.actions';
 
-import { filter } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
   pageTitle = 'Log In';
@@ -21,18 +20,22 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private sub: Subscription;
 
-  constructor(private authService: AuthService, private router: Router, private store: Store<State>) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private store: Store<State>
+  ) {}
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
 
   ngOnInit(): void {
-    this.sub = this.store.select(fromUsers.USER_FEATURE_KEY).pipe(
-      filter(userState => Boolean(userState))
-    ).subscribe({
-      next: (userState) => this.maskUserName = userState.maskUserName
-    });
+    this.sub = this.store
+      .pipe(select(fromUsers.selectMaskUserName))
+      .subscribe((maskUserName) => {
+        this.maskUserName = maskUserName;
+      });
   }
 
   cancel(): void {

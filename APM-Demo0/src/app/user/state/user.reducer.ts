@@ -1,7 +1,5 @@
 import { ActionReducer, Action, createReducer, on } from '@ngrx/store';
-import { unmaskUserName, maskUserName } from './actions';
-
-export const USER_FEATURE_KEY = "users";
+import { unmaskUserName, maskUserName } from './user.actions';
 
 export interface UserState {
   maskUserName: boolean;

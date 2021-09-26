@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { filter } from 'rxjs/operators';
-import { hideProductCode, showProductCode } from '../state/actions';
+import { Store, select } from '@ngrx/store';
+import { hideProductCode, showProductCode } from '../state/product-list.actions';
 
-import { Subscription } from 'rxjs';
+import { Subscription} from 'rxjs';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
-import * as fromProducts from '../state/product-list.reducer';
+import * as fromProductList from '../state';
 import { State } from '../state/product-list.reducer';
 
 @Component({
@@ -29,7 +28,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   private sub2: Subscription;
 
-  // "State" here is the global state extended with ProductState. We use global state here because this component is from the lazy-loaded module.
   constructor(private productService: ProductService, private store: Store<State>) {
   }
 
@@ -43,10 +41,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
       error: err => this.errorMessage = err
     });
 
-    this.sub2 = this.store.select(fromProducts.PRODUCTS_FEATURE_KEY).pipe(
-      filter(products => Boolean(products))).subscribe({
-      next: (productListState) => this.displayCode = productListState.showProductCode
-    })
+    this.sub2 = this.store
+      .pipe(select(fromProductList.selectShowProductCode))
+      .subscribe(
+        (showProductCode: boolean) =>
+          (this.displayCode = showProductCode)
+      );
   }
 
   ngOnDestroy(): void {

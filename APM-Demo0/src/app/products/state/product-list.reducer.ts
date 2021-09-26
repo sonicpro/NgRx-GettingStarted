@@ -1,9 +1,7 @@
 import { createReducer, ActionReducer, Action, on } from '@ngrx/store';
-import { showProductCode, hideProductCode } from './actions';
+import { showProductCode, hideProductCode } from './product-list.actions';
 import { Product } from '../product';
 import * as fromAppState from '../../state/app.state';
-
-export const PRODUCTS_FEATURE_KEY = 'products';
 
 export interface ProductState {
   showProductCode: boolean;
@@ -22,13 +20,15 @@ export interface ProductsPartialState {
 */
 
 const initialState: ProductState = {
-  showProductCode: true
-} as ProductState;
+  showProductCode: true,
+  currentProduct: null,
+  products: []
+};
 
 const productListReducer: ActionReducer<ProductState, Action> = createReducer<ProductState>(
   initialState,
-  on(showProductCode, (state): ProductState => ({ ...state, showProductCode: true })),
-  on(hideProductCode, (state): ProductState => ({ ...state, showProductCode: false })),
+  on(showProductCode, (state: ProductState) => ({ ...state, showProductCode: true })),
+  on(hideProductCode, (state: ProductState) => ({ ...state, showProductCode: false })),
 )
 
 export function reducer(state: ProductState | undefined, action: Action) {
