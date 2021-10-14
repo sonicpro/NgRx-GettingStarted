@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { hideProductCode, showProductCode } from '../state/product-list.actions';
+import * as FromProducts from '../state/product-list.actions';
 
 import { Subscription} from 'rxjs';
 
@@ -8,11 +8,12 @@ import { Product } from '../product';
 import { ProductService } from '../product.service';
 import * as fromProductList from '../state';
 import { State } from '../state/product-list.reducer';
+import { selectCurrentProduct } from '../state';
 
 @Component({
   selector: 'pm-product-list',
   templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.css']
+  styleUrls: ['./product-list.component.css'],
 })
 export class ProductListComponent implements OnInit, OnDestroy {
   pageTitle = 'Products';
@@ -28,24 +29,26 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   private sub2: Subscription;
 
-  constructor(private productService: ProductService, private store: Store<State>) {
-  }
+  constructor(
+    private productService: ProductService,
+    private store: Store<State>
+  ) {}
 
   ngOnInit(): void {
-    this.sub = this.productService.selectedProductChanges$.subscribe(
-      currentProduct => this.selectedProduct = currentProduct
-    );
+    // TODO: Unsubscribe
+    this.sub = this.store
+      .pipe(select(selectCurrentProduct))
+      .subscribe((currentProduct) => (this.selectedProduct = currentProduct));
 
     this.productService.getProducts().subscribe({
-      next: (products: Product[]) => this.products = products,
-      error: err => this.errorMessage = err
+      next: (products: Product[]) => (this.products = products),
+      error: (err) => (this.errorMessage = err),
     });
 
     this.sub2 = this.store
       .pipe(select(fromProductList.selectShowProductCode))
       .subscribe(
-        (showProductCode: boolean) =>
-          (this.displayCode = showProductCode)
+        (showProductCode: boolean) => (this.displayCode = showProductCode)
       );
   }
 
@@ -56,18 +59,17 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   checkChanged(): void {
     if (this.displayCode) {
-      this.store.dispatch(hideProductCode());
+      this.store.dispatch(FromProducts.hideProductCode());
     } else {
-      this.store.dispatch(showProductCode());
+      this.store.dispatch(FromProducts.showProductCode());
     }
   }
 
   newProduct(): void {
-    this.productService.changeSelectedProduct(this.productService.newProduct());
+    this.store.dispatch(FromProducts.initCurrentProduct());
   }
 
   productSelected(product: Product): void {
-    this.productService.changeSelectedProduct(product);
+    this.store.dispatch(FromProducts.setCurrentProduct({ product }));
   }
-
 }

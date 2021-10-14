@@ -1,7 +1,8 @@
 import { createReducer, ActionReducer, Action, on } from '@ngrx/store';
-import { showProductCode, hideProductCode } from './product-list.actions';
+import * as FromProducts from './product-list.actions';
 import { Product } from '../product';
 import * as fromAppState from '../../state/app.state';
+import { state } from '@angular/animations';
 
 export interface ProductState {
   showProductCode: boolean;
@@ -25,11 +26,46 @@ const initialState: ProductState = {
   products: []
 };
 
-const productListReducer: ActionReducer<ProductState, Action> = createReducer<ProductState>(
-  initialState,
-  on(showProductCode, (state: ProductState) => ({ ...state, showProductCode: true })),
-  on(hideProductCode, (state: ProductState) => ({ ...state, showProductCode: false })),
-)
+const productListReducer: ActionReducer<ProductState, Action> =
+  createReducer<ProductState>(
+    initialState,
+    on(FromProducts.showProductCode, (state: ProductState): ProductState => {
+      return {
+        ...state,
+        showProductCode: true,
+      };
+    }),
+    on(FromProducts.hideProductCode, (state: ProductState): ProductState => {
+      return {
+        ...state,
+        showProductCode: false,
+      };
+    }),
+    on(FromProducts.setCurrentProduct, (state: ProductState, action): ProductState => {
+      return {
+        ...state,
+        currentProduct: action.product,
+      };
+    }),
+    on(FromProducts.initCurrentProduct, (state: ProductState): ProductState => {
+      return {
+        ...state,
+        currentProduct: {
+          id: 0,
+          productName: '',
+          productCode: 'New',
+          description: '',
+          starRating: 0,
+        },
+      };
+    }),
+    on(FromProducts.clearCurrentProduct, (state: ProductState): ProductState => {
+      return {
+        ...state,
+        currentProduct: null,
+      };
+    })
+  );
 
 export function reducer(state: ProductState | undefined, action: Action) {
   return productListReducer(state, action);

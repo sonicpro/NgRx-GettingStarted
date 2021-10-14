@@ -12,3 +12,8 @@ export const selectShowProductCode = createSelector(
   (productState: ProductState) => productState.showProductCode
 );
 
+export const selectCurrentProduct = createSelector(
+  selectProducts,
+  (productState: ProductState) => productState.currentProduct
+);
+
