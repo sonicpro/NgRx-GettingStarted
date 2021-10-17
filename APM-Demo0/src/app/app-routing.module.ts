@@ -17,7 +17,7 @@ const appRoutes: Routes = [
         path: 'products',
         canActivate: [AuthGuard],
         loadChildren: () =>
-          import('./products/product.module').then(m => m.ProductModule)
+          import('./products/product.module').then(m => m.ProductModule),
       },
       { path: '', redirectTo: 'welcome', pathMatch: 'full' },
     ]

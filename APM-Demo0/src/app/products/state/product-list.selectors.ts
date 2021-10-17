@@ -17,3 +17,7 @@ export const selectCurrentProduct = createSelector(
   (productState: ProductState) => productState.currentProduct
 );
 
+export const selectAllProducts = createSelector(
+  selectProducts,
+  (productState: ProductState) => productState.products
+);

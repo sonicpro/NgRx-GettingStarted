@@ -32,14 +32,11 @@ export class ProductService {
     const newProduct = { ...product, id: null };
     return this.http.post<Product>(this.productsUrl, newProduct, { headers })
       .pipe(
-        tap(data => console.log('createProduct: ' + JSON.stringify(data))),
-        tap(data => {
-          this.products.push(data);
-        }),
         catchError(this.handleError)
       );
   }
 
+  // TODO move the logic for update / delete to effects / reducers.
   deleteProduct(id: number): Observable<{}> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.productsUrl}/${id}`;

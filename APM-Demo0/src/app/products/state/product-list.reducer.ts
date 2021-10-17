@@ -2,7 +2,6 @@ import { createReducer, ActionReducer, Action, on } from '@ngrx/store';
 import * as FromProducts from './product-list.actions';
 import { Product } from '../product';
 import * as fromAppState from '../../state/app.state';
-import { state } from '@angular/animations';
 
 export interface ProductState {
   showProductCode: boolean;
@@ -64,6 +63,29 @@ const productListReducer: ActionReducer<ProductState, Action> =
         ...state,
         currentProduct: null,
       };
+    }),
+    on(FromProducts.loadProductsSuccess, (state: ProductState, action): ProductState => {
+      return {
+        ...state,
+        products: action.products,
+      }
+    }),
+    on(FromProducts.loadProductsFailure, (state: ProductState, action): ProductState => {
+      console.error(action.error);
+      return state;
+    }),
+    on(FromProducts.createProductSuccess, (state: ProductState, action): ProductState => {
+      return {
+        ...state,
+        products: [
+          ...state.products,
+          action.product,
+        ],
+      };
+    }),
+    on(FromProducts.createProductFailure, (state: ProductState, action): ProductState => {
+      console.error(action.error);
+      return state;
     })
   );
 

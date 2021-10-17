@@ -5,10 +5,9 @@ import * as FromProducts from '../state/product-list.actions';
 import { Subscription} from 'rxjs';
 
 import { Product } from '../product';
-import { ProductService } from '../product.service';
 import * as fromProductList from '../state';
 import { State } from '../state/product-list.reducer';
-import { selectCurrentProduct } from '../state';
+import { selectCurrentProduct, selectAllProducts } from '../state';
 
 @Component({
   selector: 'pm-product-list',
@@ -30,7 +29,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private sub2: Subscription;
 
   constructor(
-    private productService: ProductService,
     private store: Store<State>
   ) {}
 
@@ -40,16 +38,19 @@ export class ProductListComponent implements OnInit, OnDestroy {
       .pipe(select(selectCurrentProduct))
       .subscribe((currentProduct) => (this.selectedProduct = currentProduct));
 
-    this.productService.getProducts().subscribe({
-      next: (products: Product[]) => (this.products = products),
-      error: (err) => (this.errorMessage = err),
-    });
+    this.store
+      .pipe(select(selectAllProducts))
+      .subscribe((products: Product[]) => {
+        this.products = products;
+      });
 
     this.sub2 = this.store
       .pipe(select(fromProductList.selectShowProductCode))
       .subscribe(
         (showProductCode: boolean) => (this.displayCode = showProductCode)
       );
+
+    this.store.dispatch(FromProducts.loadProducts());
   }
 
   ngOnDestroy(): void {
