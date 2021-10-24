@@ -132,10 +132,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   deleteProduct(product: Product): void {
     if (product && product.id) {
       if (confirm(`Really delete the product: ${product.productName}?`)) {
-        this.productService.deleteProduct(product.id).subscribe({
-          next: () => this.store.dispatch(FromProducts.clearCurrentProduct()),
-          error: (err) => (this.errorMessage = err),
-        });
+        this.store.dispatch(FromProducts.deleteProduct({ product }));
       }
     } else {
       // No need to delete, it was never saved
@@ -154,10 +151,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         if (product.id === 0) {
           this.store.dispatch(FromProducts.createProduct({ product }));
         } else {
-          this.productService.updateProduct(product).subscribe({
-            next: (p) => this.store.dispatch(FromProducts.setCurrentProduct({ product: p })),
-            error: (err) => (this.errorMessage = err),
-          });
+          this.store.dispatch(FromProducts.updateProduct({ product }));
         }
       }
     }

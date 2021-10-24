@@ -11,48 +11,60 @@ export const setCurrentProduct = createAction(
   props<{ product: Product }>()
 );
 
-export const clearCurrentProduct = createAction('[Product] Clear Current Product');
+export const clearCurrentProduct = createAction(
+  '[Product] Clear Current Product'
+);
 
-export const initCurrentProduct = createAction('[Product] Init Current Product');
+export const initCurrentProduct = createAction(
+  '[Product] Init Current Product'
+);
 
 export const loadProducts = createAction('[Product/API] Load');
 
-export const loadProductsSuccess = createAction('[Product/API] Load Success',
+export const loadProductsSuccess = createAction(
+  '[Product/API] Load Success',
   props<{ products: Product[] }>()
 );
 
-export const loadProductsFailure = createAction('[Product/API] Load Failure',
+export const loadProductsFailure = createAction(
+  '[Product/API] Load Failure',
   props<{ error: unknown }>()
 );
 
-export const createProduct = createAction('[Product/API] Create',
+export const createProduct = createAction(
+  '[Product/API] Create',
   props<{ product: Product }>()
 );
 
-export const createProductSuccess = createAction('[Product/API] Create Success',
+export const createProductSuccess = createAction(
+  '[Product/API] Create Success',
   props<{ product: Product }>()
 );
 
-export const createProductFailure = createAction('[Product/API] Load Failure',
+export const createProductFailure = createAction(
+  '[Product/API] Load Failure',
   props<{ error: unknown }>()
 );
 
-// export const loadProducts = createAction('[Product/API] Load');
+export const updateProduct = createAction(
+  '[Product/API] Update',
+  props<{ product: Product }>()
+);
 
-// export const loadProductsSuccess = createAction('[Product/API] Load Success',
-//   props<{ products: Product[] }>()
-// );
+export const updateProductsSuccess = createAction('[Product/API] Update Success',
+  props<{ product: Product }>()
+);
 
-// export const loadProductsFailure = createAction('[Product/API] Load Failure',
-//   props<{ error: unknown }>()
-// );
+export const updateProductsFailure = createAction('[Product/API] Update Failure',
+  props<{ error: unknown }>()
+);
 
-// export const loadProducts = createAction('[Product/API] Load');
+export const deleteProduct = createAction('[Product/API] Delete',
+  props<{ product: Product }>()
+);
 
-// export const loadProductsSuccess = createAction('[Product/API] Load Success',
-//   props<{ products: Product[] }>()
-// );
+export const deleteProductSuccess = createAction('[Product/API] Delete Success');
 
-// export const loadProductsFailure = createAction('[Product/API] Load Failure',
-//   props<{ error: unknown }>()
-// );
+export const deleteProductFailure = createAction('[Product/API] Delete Failure',
+  props<{ error: unknown }>()
+);

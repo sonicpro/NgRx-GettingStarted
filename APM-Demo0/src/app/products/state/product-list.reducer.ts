@@ -86,6 +86,16 @@ const productListReducer: ActionReducer<ProductState, Action> =
     on(FromProducts.createProductFailure, (state: ProductState, action): ProductState => {
       console.error(action.error);
       return state;
+    }),
+    on(FromProducts.updateProductsSuccess, (state: ProductState, action): ProductState => {
+      const oldProducts = state.products.slice();
+      const updatedProductIndex = oldProducts.findIndex(p => p.id === action.product.id);
+      oldProducts.splice(updatedProductIndex, 1, action.product);
+      const newProducts = oldProducts;
+      return {
+        ...state,
+        products: newProducts,
+      }
     })
   );
 
