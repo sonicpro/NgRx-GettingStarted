@@ -7,16 +7,17 @@ import { State } from '../state/app.state';
 import { unmaskUserName, maskUserName } from './state/user.actions';
 
 import { AuthService } from './auth.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  pageTitle = 'Log In';
+  public pageTitle = 'Log In';
 
-  maskUserName: boolean;
+  public maskUserName$: Observable<boolean>;
 
   private sub: Subscription;
 
@@ -31,11 +32,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.sub = this.store
-      .pipe(select(fromUsers.selectMaskUserName))
-      .subscribe((maskUserName) => {
-        this.maskUserName = maskUserName;
-      });
+    this.maskUserName$ = this.store
+      .pipe(select(fromUsers.selectMaskUserName));
   }
 
   cancel(): void {
@@ -43,11 +41,15 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   checkChanged(): void {
-    if (this.maskUserName) {
-      this.store.dispatch(unmaskUserName());
-    } else {
-      this.store.dispatch(maskUserName());
-    }
+    this.maskUserName$
+      .pipe(take(1))
+      .subscribe((isMasked: boolean) => {
+      if (isMasked) {
+        this.store.dispatch(unmaskUserName());
+      } else {
+        this.store.dispatch(maskUserName());
+      }
+    });
   }
 
   login(loginForm: NgForm): void {
