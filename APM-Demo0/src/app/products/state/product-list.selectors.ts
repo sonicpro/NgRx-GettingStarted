@@ -9,15 +9,28 @@ export const selectProducts = createFeatureSelector<State, ProductState>(PRODUCT
 
 export const selectShowProductCode = createSelector(
   selectProducts,
-  (productState: ProductState) => productState.showProductCode
+  (productState: ProductState) => {
+    return productState.showProductCode;
+  }
 );
 
 export const selectCurrentProduct = createSelector(
   selectProducts,
-  (productState: ProductState) => productState.currentProduct
+  (productState: ProductState) => {
+    return productState.currentProduct;
+  }
 );
 
 export const selectAllProducts = createSelector(
   selectProducts,
-  (productState: ProductState) => productState.products
+  (productState: ProductState) => {
+    return productState.products;
+  }
 );
+
+export const getError = createSelector(
+  selectProducts,
+  (productState: ProductState) => {
+    return productState.error;
+  }
+)

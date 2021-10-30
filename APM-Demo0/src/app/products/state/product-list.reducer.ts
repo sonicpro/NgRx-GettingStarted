@@ -7,6 +7,7 @@ export interface ProductState {
   showProductCode: boolean;
   currentProduct: Product;
   products: Product[];
+  error: unknown;
 }
 
 export interface State extends fromAppState.State {
@@ -22,7 +23,8 @@ export interface ProductsPartialState {
 const initialState: ProductState = {
   showProductCode: true,
   currentProduct: null,
-  products: []
+  products: [],
+  error: ''
 };
 
 const productListReducer: ActionReducer<ProductState, Action> =
@@ -68,11 +70,15 @@ const productListReducer: ActionReducer<ProductState, Action> =
       return {
         ...state,
         products: action.products,
-      }
+        error: '',
+      };
     }),
     on(FromProducts.loadProductsFailure, (state: ProductState, action): ProductState => {
-      console.error(action.error);
-      return state;
+      return {
+        ...state,
+        products: [],
+        error: action.error,
+      };
     }),
     on(FromProducts.createProductSuccess, (state: ProductState, action): ProductState => {
       return {
@@ -84,8 +90,10 @@ const productListReducer: ActionReducer<ProductState, Action> =
       };
     }),
     on(FromProducts.createProductFailure, (state: ProductState, action): ProductState => {
-      console.error(action.error);
-      return state;
+      return {
+        ...state,
+        error: action.error,
+      };
     }),
     on(FromProducts.updateProductsSuccess, (state: ProductState, action): ProductState => {
       const oldProducts = state.products.slice();
@@ -95,7 +103,19 @@ const productListReducer: ActionReducer<ProductState, Action> =
       return {
         ...state,
         products: newProducts,
-      }
+      };
+    }),
+    on(FromProducts.updateProductsFailure, (state: ProductState, action): ProductState => {
+      return {
+        ...state,
+        error: action.error,
+      };
+    }),
+    on(FromProducts.deleteProductFailure, (state: ProductState, action): ProductState => {
+      return {
+        ...state,
+        error: action.error,
+      };
     })
   );
 

@@ -7,7 +7,7 @@ import { Observable, Subscription} from 'rxjs';
 import { Product } from '../product';
 import * as fromProductList from '../state';
 import { State } from '../state/product-list.reducer';
-import { selectCurrentProduct, selectAllProducts } from '../state';
+import { selectCurrentProduct, selectAllProducts, getError } from '../state';
 import { map, take } from 'rxjs/operators';
 
 @Component({
@@ -16,12 +16,12 @@ import { map, take } from 'rxjs/operators';
   styleUrls: ['./product-list.component.css'],
 })
 export class ProductListComponent implements OnInit {
-  pageTitle = 'Products';
-  errorMessage: string;
+  public pageTitle = 'Products';
+  public errorMessage$: Observable<unknown>;
 
-  displayCode$: Observable<boolean>;
+  public displayCode$: Observable<boolean>;
 
-  products$: Observable<Product[]>;
+  public products$: Observable<Product[]>;
 
   // Used to highlight the selected product in the list
   selectedProduct$: Observable<Product | null>;
@@ -41,6 +41,9 @@ export class ProductListComponent implements OnInit {
       .pipe(select(fromProductList.selectShowProductCode));
 
     this.store.dispatch(FromProducts.loadProducts());
+
+    this.errorMessage$ = this.store
+      .pipe(select(getError));
   }
 
   checkChanged(): void {

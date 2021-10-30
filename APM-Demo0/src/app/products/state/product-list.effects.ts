@@ -60,7 +60,7 @@ export class ProductListEffects {
             return FromProducts.updateProductsSuccess({ product });
           }),
           catchError((error: unknown) => {
-            return of(FromProducts.createProductFailure({ error }));
+            return of(FromProducts.updateProductsFailure({ error }));
           })
         );
       })

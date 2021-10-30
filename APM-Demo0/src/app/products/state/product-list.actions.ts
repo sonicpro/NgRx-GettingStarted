@@ -42,7 +42,7 @@ export const createProductSuccess = createAction(
 );
 
 export const createProductFailure = createAction(
-  '[Product/API] Load Failure',
+  '[Product/API] Create Failure',
   props<{ error: unknown }>()
 );
 

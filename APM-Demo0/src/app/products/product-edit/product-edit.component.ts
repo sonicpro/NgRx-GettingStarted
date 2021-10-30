@@ -1,15 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { Product } from '../product';
-import { ProductService } from '../product.service';
 import { GenericValidator } from '../../shared/generic-validator';
 import { NumberValidators } from '../../shared/number.validator';
 import { select, Store } from '@ngrx/store';
 import { State } from '../state/product-list.reducer';
-import { selectCurrentProduct } from '../state/product-list.selectors';
+import { getError, selectCurrentProduct } from '../state/product-list.selectors';
 import * as FromProducts from '../state/product-list.actions';
 
 @Component({
@@ -17,12 +16,12 @@ import * as FromProducts from '../state/product-list.actions';
   templateUrl: './product-edit.component.html',
 })
 export class ProductEditComponent implements OnInit, OnDestroy {
-  pageTitle = 'Product Edit';
-  errorMessage = '';
-  productForm: FormGroup;
+  public pageTitle = 'Product Edit';
+  public errorMessage$: Observable<unknown>;
+  public productForm: FormGroup;
 
-  product: Product | null;
-  sub: Subscription;
+  public product: Product | null;
+  public sub: Subscription;
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
@@ -31,7 +30,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private productService: ProductService,
     private store: Store<State>
   ) {
     // Defines all of the validation messages for the form.
@@ -84,6 +82,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
           this.productForm
         ))
     );
+
+    this.errorMessage$ = this.store
+      .pipe(select(getError));
   }
 
   ngOnDestroy(): void {
