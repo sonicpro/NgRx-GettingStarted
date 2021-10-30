@@ -96,10 +96,18 @@ const productListReducer: ActionReducer<ProductState, Action> =
       };
     }),
     on(FromProducts.updateProductsSuccess, (state: ProductState, action): ProductState => {
-      const oldProducts = state.products.slice();
-      const updatedProductIndex = oldProducts.findIndex(p => p.id === action.product.id);
-      oldProducts.splice(updatedProductIndex, 1, action.product);
-      const newProducts = oldProducts;
+      // splice() mutates the existing array. That is why we had to use "oldProducts" copy of the state.
+      // const oldProducts = state.products.slice();
+      // const updatedProductIndex = oldProducts.findIndex(p => p.id === action.product.id);
+      // oldProducts.splice(updatedProductIndex, 1, action.product);
+
+      const newProducts = state.products.map((product: Product) => {
+        if (product.id === action.product.id) {
+          return action.product;
+        } else {
+          return product;
+        }
+      });
       return {
         ...state,
         products: newProducts,
