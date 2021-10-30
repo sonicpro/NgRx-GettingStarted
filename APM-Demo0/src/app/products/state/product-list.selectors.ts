@@ -14,10 +14,19 @@ export const selectShowProductCode = createSelector(
   }
 );
 
-export const selectCurrentProduct = createSelector(
+export const selectCurrentProductId = createSelector(
   selectProducts,
   (productState: ProductState) => {
-    return productState.currentProduct;
+    return productState.currentProductId;
+  }
+)
+export const selectCurrentProduct = createSelector(
+  selectProducts,
+  selectCurrentProductId,
+  (productState: ProductState, id: number) => {
+    return productState.products.find((p) => {
+      return p.id === id;
+    });
   }
 );
 

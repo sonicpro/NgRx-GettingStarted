@@ -46,7 +46,7 @@ export class ProductListEffects {
     return this.actions$.pipe(
       ofType(FromProducts.createProductSuccess),
       map((action) => {
-        return FromProducts.setCurrentProduct({ product: action.product });
+        return FromProducts.setCurrentProduct({ id: action.product.id });
       })
     );
   });
@@ -71,7 +71,7 @@ export class ProductListEffects {
     return this.actions$.pipe(
       ofType(FromProducts.updateProductsSuccess),
       map((action) => {
-        return FromProducts.setCurrentProduct({ product: action.product });
+        return FromProducts.setCurrentProduct({ id: action.product.id });
       })
     );
   });

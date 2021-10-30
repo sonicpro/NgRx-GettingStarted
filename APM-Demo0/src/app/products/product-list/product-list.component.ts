@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as FromProducts from '../state/product-list.actions';
 
-import { Observable, Subscription} from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { Product } from '../product';
 import * as fromProductList from '../state';
@@ -65,6 +65,6 @@ export class ProductListComponent implements OnInit {
   }
 
   productSelected(product: Product): void {
-    this.store.dispatch(FromProducts.setCurrentProduct({ product }));
+    this.store.dispatch(FromProducts.setCurrentProduct({ id: product.id }));
   }
 }

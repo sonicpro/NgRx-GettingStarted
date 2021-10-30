@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import { createAction, props } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Product } from '../product';
@@ -8,7 +9,7 @@ export const hideProductCode = createAction('[Product] Hide Product Code');
 
 export const setCurrentProduct = createAction(
   '[Product] Set Current Product',
-  props<{ product: Product }>()
+  props<{ id: number }>()
 );
 
 export const clearCurrentProduct = createAction(

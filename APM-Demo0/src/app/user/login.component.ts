@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
@@ -14,7 +14,7 @@ import { take } from 'rxjs/operators';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
   public pageTitle = 'Log In';
 
   public maskUserName$: Observable<boolean>;
@@ -26,10 +26,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<State>
   ) {}
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
-  }
 
   ngOnInit(): void {
     this.maskUserName$ = this.store
