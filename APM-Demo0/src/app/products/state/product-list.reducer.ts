@@ -3,6 +3,7 @@ import * as FromProducts from './product-list.actions';
 import { Product } from '../product';
 import * as fromAppState from '../../state/app.state';
 import { ProductService } from '../product.service';
+import { filter } from 'rxjs/operators';
 
 export interface ProductState {
   showProductCode: boolean;
@@ -84,7 +85,10 @@ const productListReducer: ActionReducer<ProductState, Action> =
       return {
         ...state,
         products: [
-          ...state.products,
+          ...state.products
+            .filter((p: Product) => {
+              return p.id > 0;
+            }),
           action.product,
         ],
       };
