@@ -1,5 +1,6 @@
 import { createSelector, createFeatureSelector  } from '@ngrx/store';
-import { State, ProductState } from './product-list.reducer';
+import { State } from '../state';
+import { ProductState } from './product-list.reducer';
 
 // So that to be used as createFeatureSelector argument, feature key must correspond
 // one of the properties of the global state.

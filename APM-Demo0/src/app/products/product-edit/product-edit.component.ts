@@ -2,13 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { Product } from '../product';
 import { GenericValidator } from '../../shared/generic-validator';
 import { NumberValidators } from '../../shared/number.validator';
 import { select, Store } from '@ngrx/store';
-import { State } from '../state/product-list.reducer';
+import { State } from '../state';
 import { getError, selectCurrentProduct } from '../state/product-list.selectors';
 import * as FromProducts from '../state/product-list.actions';
 

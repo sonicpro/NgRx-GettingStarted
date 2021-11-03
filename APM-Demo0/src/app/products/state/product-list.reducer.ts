@@ -1,19 +1,12 @@
 import { createReducer, ActionReducer, Action, on } from '@ngrx/store';
 import * as FromProducts from './product-list.actions';
 import { Product } from '../product';
-import * as fromAppState from '../../state/app.state';
-import { ProductService } from '../product.service';
-import { filter } from 'rxjs/operators';
 
 export interface ProductState {
   showProductCode: boolean;
   currentProductId: number | null;
   products: Product[];
   error: unknown;
-}
-
-export interface State extends fromAppState.State {
-  products: ProductState;
 }
 
 const initialState: ProductState = {

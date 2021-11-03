@@ -6,7 +6,7 @@ import { map, take } from 'rxjs/operators';
 import { Product } from '../product';
 import * as FromProducts from '../state/product-list.actions';
 import * as fromProductList from '../state/product-list.selectors';
-import { State } from '../state/product-list.reducer';
+import { State } from '../state';
 import {
   selectCurrentProductId,
   selectAllProducts,
