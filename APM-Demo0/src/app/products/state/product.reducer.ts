@@ -1,5 +1,5 @@
 import { createReducer, ActionReducer, Action, on } from '@ngrx/store';
-import * as FromProducts from './product-list.actions';
+import { ProductPageActions, ProductApiActions } from './actions';
 import { Product } from '../product';
 
 export interface ProductState {
@@ -19,25 +19,25 @@ const initialState: ProductState = {
 const productListReducer: ActionReducer<ProductState, Action> =
   createReducer<ProductState>(
     initialState,
-    on(FromProducts.showProductCode, (state: ProductState): ProductState => {
+    on(ProductPageActions.showProductCode, (state: ProductState): ProductState => {
       return {
         ...state,
         showProductCode: true,
       };
     }),
-    on(FromProducts.hideProductCode, (state: ProductState): ProductState => {
+    on(ProductPageActions.hideProductCode, (state: ProductState): ProductState => {
       return {
         ...state,
         showProductCode: false,
       };
     }),
-    on(FromProducts.setCurrentProduct, (state: ProductState, action): ProductState => {
+    on(ProductPageActions.setCurrentProduct, (state: ProductState, action): ProductState => {
       return {
         ...state,
         currentProductId: action.id,
       };
     }),
-    on(FromProducts.initCurrentProduct, (state: ProductState): ProductState => {
+    on(ProductPageActions.initCurrentProduct, (state: ProductState): ProductState => {
       const newProduct: Product = {
           id: 0,
           productName: '',
@@ -54,27 +54,27 @@ const productListReducer: ActionReducer<ProductState, Action> =
         ]
       };
     }),
-    on(FromProducts.clearCurrentProduct, (state: ProductState): ProductState => {
+    on(ProductPageActions.clearCurrentProduct, (state: ProductState): ProductState => {
       return {
         ...state,
         currentProductId: null,
       };
     }),
-    on(FromProducts.loadProductsSuccess, (state: ProductState, action): ProductState => {
+    on(ProductApiActions.loadProductsSuccess, (state: ProductState, action): ProductState => {
       return {
         ...state,
         products: action.products,
         error: '',
       };
     }),
-    on(FromProducts.loadProductsFailure, (state: ProductState, action): ProductState => {
+    on(ProductApiActions.loadProductsFailure, (state: ProductState, action): ProductState => {
       return {
         ...state,
         products: [],
         error: action.error,
       };
     }),
-    on(FromProducts.createProductSuccess, (state: ProductState, action): ProductState => {
+    on(ProductApiActions.createProductSuccess, (state: ProductState, action): ProductState => {
       return {
         ...state,
         products: [
@@ -86,13 +86,13 @@ const productListReducer: ActionReducer<ProductState, Action> =
         ],
       };
     }),
-    on(FromProducts.createProductFailure, (state: ProductState, action): ProductState => {
+    on(ProductApiActions.createProductFailure, (state: ProductState, action): ProductState => {
       return {
         ...state,
         error: action.error,
       };
     }),
-    on(FromProducts.updateProductsSuccess, (state: ProductState, action): ProductState => {
+    on(ProductApiActions.updateProductsSuccess, (state: ProductState, action): ProductState => {
       // splice() mutates the existing array. That is why we had to use "oldProducts" copy of the state.
       // const oldProducts = state.products.slice();
       // const updatedProductIndex = oldProducts.findIndex(p => p.id === action.product.id);
@@ -110,13 +110,13 @@ const productListReducer: ActionReducer<ProductState, Action> =
         products: newProducts,
       };
     }),
-    on(FromProducts.updateProductsFailure, (state: ProductState, action): ProductState => {
+    on(ProductApiActions.updateProductsFailure, (state: ProductState, action): ProductState => {
       return {
         ...state,
         error: action.error,
       };
     }),
-    on(FromProducts.deleteProductFailure, (state: ProductState, action): ProductState => {
+    on(ProductApiActions.deleteProductFailure, (state: ProductState, action): ProductState => {
       return {
         ...state,
         error: action.error,

@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 import { Product } from '../product';
-import * as FromProducts from '../state/product-list.actions';
-import * as fromProductList from '../state/product-list.selectors';
+import { ProductPageActions }from '../state';
+import * as fromProductList from '../state/product.selectors';
 import { State } from '../state';
 import {
   selectCurrentProductId,
@@ -37,7 +37,7 @@ export class ProductShellComponent implements OnInit {
     this.displayCode$ = this.store
       .pipe(select(fromProductList.selectShowProductCode));
 
-    this.store.dispatch(FromProducts.loadProducts());
+    this.store.dispatch(ProductPageActions.loadProducts());
 
     this.errorMessage$ = this.store
       .pipe(select(getError));
@@ -48,9 +48,9 @@ export class ProductShellComponent implements OnInit {
       take(1),
       map((isChecked) => {
         if (isChecked) {
-          this.store.dispatch(FromProducts.hideProductCode());
+          this.store.dispatch(ProductPageActions.hideProductCode());
         } else {
-          this.store.dispatch(FromProducts.showProductCode());
+          this.store.dispatch(ProductPageActions.showProductCode());
         }
       })
     )
@@ -58,10 +58,10 @@ export class ProductShellComponent implements OnInit {
   }
 
   public onProductSelected(id: number): void {
-    this.store.dispatch(FromProducts.setCurrentProduct({ id }));
+    this.store.dispatch(ProductPageActions.setCurrentProduct({ id }));
   }
 
   public onInitNewProduct(): void {
-    this.store.dispatch(FromProducts.initCurrentProduct());
+    this.store.dispatch(ProductPageActions.initCurrentProduct());
   }
 }
