@@ -9,12 +9,13 @@ import * as fromProductList from '../state/product.selectors';
 import { State } from '../state';
 import {
   selectCurrentProductId,
+  selectCurrentProduct,
   selectAllProducts,
-  getError
+  getError,
 } from '../state';
 
 @Component({
-  templateUrl: './product-shell.component.html'
+  templateUrl: './product-shell.component.html',
 })
 export class ProductShellComponent implements OnInit {
   public errorMessage$: Observable<unknown>;
@@ -23,13 +24,19 @@ export class ProductShellComponent implements OnInit {
 
   public products$: Observable<Product[]>;
 
-  selectedProductId$: Observable<number | null>;
+  public selectedProductId$: Observable<number | null>;
+
+  public currentProduct$: Observable<Product>;
 
   constructor(private store: Store<State>) {}
 
   ngOnInit(): void {
     this.selectedProductId$ = this.store
       .pipe(select(selectCurrentProductId));
+
+    // Watch for changes to the currently selected product
+    this.currentProduct$ = this.store
+      .pipe(select(selectCurrentProduct));
 
     this.products$ = this.store
       .pipe(select(selectAllProducts));
@@ -63,5 +70,24 @@ export class ProductShellComponent implements OnInit {
 
   public onInitNewProduct(): void {
     this.store.dispatch(ProductPageActions.initCurrentProduct());
+  }
+
+  public onDeleteProduct(product: Product): void {
+    if (product && product.id) {
+      if (confirm(`Really delete the product: ${product.productName}?`)) {
+        this.store.dispatch(ProductPageActions.deleteProduct({ product }));
+      }
+    } else {
+      // No need to delete, it was never saved
+      this.store.dispatch(ProductPageActions.clearCurrentProduct());
+    }
+  }
+
+  public onSaveProduct(updatedOrNewProduct: Product): void {
+    if (updatedOrNewProduct.id === 0) {
+      this.store.dispatch(ProductPageActions.createProduct({ product: updatedOrNewProduct }));
+    } else {
+      this.store.dispatch(ProductPageActions.updateProduct({ product: updatedOrNewProduct }));
+    }
   }
 }

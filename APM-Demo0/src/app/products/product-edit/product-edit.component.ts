@@ -1,28 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { 
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+   } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-
-import { Observable } from 'rxjs';
 
 import { Product } from '../product';
 import { GenericValidator } from '../../shared/generic-validator';
 import { NumberValidators } from '../../shared/number.validator';
-import { select, Store } from '@ngrx/store';
-import { State } from '../state';
-import { getError, selectCurrentProduct } from '../state/product.selectors';
-import { ProductPageActions } from '../state';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @UntilDestroy()
 @Component({
   selector: 'pm-product-edit',
   templateUrl: './product-edit.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductEditComponent implements OnInit {
+export class ProductEditComponent implements OnInit, OnChanges {
   public pageTitle = 'Product Edit';
-  public errorMessage$: Observable<unknown>;
   public productForm: FormGroup;
 
-  public product: Product | null;
+  @Input() public product: Product | null;
+  @Input() public errorMessage: unknown;
+
+  @Output() public deleteProduct: EventEmitter<Product> = new EventEmitter<Product>();
+  @Output() public updatedOrNewProduct: EventEmitter<Product> = new EventEmitter<Product>();
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
@@ -30,8 +36,7 @@ export class ProductEditComponent implements OnInit {
   private genericValidator: GenericValidator;
 
   constructor(
-    private fb: FormBuilder,
-    private store: Store<State>
+    private fb: FormBuilder
   ) {
     // Defines all of the validation messages for the form.
     // These could instead be retrieved from a file or database.
@@ -70,24 +75,21 @@ export class ProductEditComponent implements OnInit {
       description: '',
     });
 
-    // Watch for changes to the currently selected product
-    this.store
-      .pipe(
-        untilDestroyed(this),
-        select(selectCurrentProduct)
-      )
-      .subscribe((currentProduct) => this.displayProduct(currentProduct));
-
     // Watch for value changes for validation
-    this.productForm.valueChanges.subscribe(
+    this.productForm.valueChanges
+      .pipe(
+        untilDestroyed(this)
+      )
+      .subscribe(
       () =>
         (this.displayMessage = this.genericValidator.processMessages(
           this.productForm
         ))
     );
+  }
 
-    this.errorMessage$ = this.store
-      .pipe(select(getError));
+  ngOnChanges(): void {
+    this.displayProduct(this.product);
   }
 
   // Also validate on blur
@@ -129,30 +131,13 @@ export class ProductEditComponent implements OnInit {
     this.displayProduct(product);
   }
 
-  deleteProduct(product: Product): void {
-    if (product && product.id) {
-      if (confirm(`Really delete the product: ${product.productName}?`)) {
-        this.store.dispatch(ProductPageActions.deleteProduct({ product }));
-      }
-    } else {
-      // No need to delete, it was never saved
-      this.store.dispatch(ProductPageActions.clearCurrentProduct());
-    }
-  }
-
   saveProduct(originalProduct: Product): void {
     if (this.productForm.valid) {
       if (this.productForm.dirty) {
         // Copy over all of the original product properties
         // Then copy over the values from the form
         // This ensures values not on the form, such as the Id, are retained
-        const product = { ...originalProduct, ...this.productForm.value };
-
-        if (product.id === 0) {
-          this.store.dispatch(ProductPageActions.createProduct({ product }));
-        } else {
-          this.store.dispatch(ProductPageActions.updateProduct({ product }));
-        }
+        this.updatedOrNewProduct.emit({ ...originalProduct, ...this.productForm.value });
       }
     }
   }
